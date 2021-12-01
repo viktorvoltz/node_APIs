@@ -1,4 +1,5 @@
 import express from 'express';
+import dbUtil from '../dbUtil.js';
 
 const router = express.Router();
 
@@ -21,6 +22,19 @@ router.get('/', (req, res) => {
     res.send('hello');
 });
 
-router.post('/')
+router.post('/', async (req, res) => {
+    const user = req.body;
+
+    users.push(user)
+
+    res.send(`user with the username ${user.F_name} added to the database!`);
+    try {
+        await dbUtil.createuser(user)
+        res.status(200).send({ message: "user added to Mongod database", data: null })
+      } catch (error) {
+        res.status(400).send({ message: "could add user to Mongod" })
+      }
+
+})
 
 export default router;
