@@ -1,19 +1,11 @@
 import express from 'express';
 import dbUtil from '../dbUtil.js';
+import { v4 as uuidv4 } from 'uuid';
 
 const router = express.Router();
 
 const users = [
-    {
-        F_name: "john",
-        L_name: "doe",
-        age: 25
-    },
-    {
-        F_name: "jane",
-        L_name: "doe",
-        age: 24
-    },
+    
 ]
 
 //routes begin with /users
@@ -25,7 +17,9 @@ router.get('/', (req, res) => {
 router.post('/', async (req, res) => {
     const user = req.body;
 
-    users.push(user)
+    const userId = uuidv4();
+    const userWithId = { ...user, id: userId}
+    users.push(userWithId);
 
     res.send(`user with the username ${user.F_name} added to the database!`);
     try {
@@ -35,6 +29,17 @@ router.post('/', async (req, res) => {
         res.status(400).send({ message: "could add user to Mongod" })
       }
 
+})
+
+router.get('/:id', (req, res) => {
+    const { id } = req.params;
+    //const id = req.params.id;
+
+    const foundUser = users.find((user) => {
+        return user.id === id;
+    })
+
+    res.send(foundUser);
 })
 
 export default router;
