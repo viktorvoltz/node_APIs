@@ -23,9 +23,15 @@ export const createUsers = async (req, res) => {
 
 }
 
-export const getUsers = (req, res) => {
-    res.send(users);
-    res.send('hello');
+export const getUsers = async (req, res) => {
+    try {
+        const allUsers = await dbUtil.getAllusers();
+        res.status(200).send({ message: "gotten users from Mongod database", data: null, allUsers, users });
+        console.log(allUsers);
+      } catch (error) {
+        res.status(400).send({ message: "could not add user to Mongod" },);
+      }
+
 }
 
 export const getUser = (req, res) => {
