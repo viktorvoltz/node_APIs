@@ -29,20 +29,24 @@ export const getUsers = async (req, res) => {
         res.status(200).send({ message: "gotten users from Mongod database", data: null, allUsers, users });
         console.log(allUsers);
       } catch (error) {
-        res.status(400).send({ message: "could not add user to Mongod" },);
+        res.status(400).send({ message: "could not get users from Mongod" },);
       }
 
 }
 
-export const getUser = (req, res) => {
+export const getUser = async(req, res) => {
     const { id } = req.params;
     //const id = req.params.id;
 
-    const foundUser = users.find((user) => {
-        return user.id === id;
-    })
+    const foundUser = users.find((user) => user.id === id);
 
-    res.send(foundUser);
+    try {
+        const oneUser = await dbUtil.getOneuser(id);
+        res.status(200).send({ message: "got user", data: null, oneUser, foundUser });
+        console.log(foundUser);
+      } catch (error) {
+        res.status(400).send({ message: `could not get user with id: ${id} from Mongod` },);
+      }
 }
 
 export const deleteUser = (req, res) => {
